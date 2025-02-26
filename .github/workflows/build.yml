@@ -36,12 +36,12 @@ jobs:
       # Bước 5: Build Docker Image
       - name: Build Docker Image
         run: |
-          docker build -t tour-client:latest .
+          docker build -t minimal-api-dev:latest .
 
       # Bước 6: Export Docker Image ra file .tar
       - name: Save Docker Image to File
         run: |
-          docker save tour-client:latest -o tour-client.tar
+          docker save minimal-api-dev:latest -o minimal-api-dev.tar
 
       # Bước 7: Upload Docker Image tới server qua SSH
       - name: Upload Docker Image to Server
@@ -51,8 +51,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}  # Tài khoản SSH
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Private key
           port: 22  # Cổng SSH (thường là 22)
-          source: "tour-client.tar"  # File .tar cần truyền
-          target: "~/tour-client/"  # Đích trên server
+          source: "minimal-api-dev.tar"  # File .tar cần truyền
+          target: "~/minimal-api-dev/"  # Đích trên server
 
       # Bước 8: SSH vào server và triển khai container từ Docker Image
       - name: Deploy Docker Container to Server
@@ -69,22 +69,22 @@ jobs:
             fi
 
             # Nạp lại Docker image từ file tar
-            docker load -i ~/tour-client/tour-client.tar
+            docker load -i ~/minimal-api-dev/minimal-api-dev.tar
 
             # Dừng và xóa container cũ nếu đang chạy
-            docker stop tour-client || true
-            docker rm tour-client || true
+            docker stop minimal-api-dev || true
+            docker rm minimal-api-dev || true
 
             # Xóa những image cũ không còn sử dụng, TRỪ image mới
             docker images --filter='dangling=true' -q | xargs -r docker rmi || true
 
             # Chạy container mới
             docker run -d \
-              --name tour-client \
-              -p 8002:8002 \
+              --name minimal-api-dev \
+              -p 7272:7272 \
               --network tour_network \
               --restart always \
-              tour-client:latest
+              minimal-api-dev:latest
 
             # Xóa file tar sau khi hoàn tất
-            rm -f ~/tour-client/tour-client.tar
+            rm -f ~/minimal-api-dev/minimal-api-dev.tar

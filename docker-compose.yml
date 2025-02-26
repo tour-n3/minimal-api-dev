@@ -1,11 +1,11 @@
 name: tour-project
 
 services:
-  tour-client:
+  minimal-api-dev:
     build: .
-    image: tour-client:latest
+    image: minimal-api-dev:latest
     ports:
-      - "8002:8002"
+      - "7272:7272"
     env_file:
       - .env
 

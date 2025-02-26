@@ -49,8 +49,8 @@ COPY yarn.lock ./yarn.lock
 # Cài đặt production dependencies
 RUN yarn install --production
 
-# Expose cổng 8002 để ứng dụng có thể truy cập được
-EXPOSE 8002
+# Expose cổng 7272 để ứng dụng có thể truy cập được
+EXPOSE 7272
 
 # Khởi động ứng dụng
-CMD ["yarn", "start", "-p", "8002"]
+CMD ["yarn", "start", "-p", "7272"]
